@@ -1,0 +1,33 @@
+services:
+  fastapi:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      NGINX_MAX_BODY_SIZE: ${NGINX_MAX_BODY_SIZE:-104857600}
+      # Only substitute these two variables; leave nginx vars ($host etc.) untouched
+      NGINX_ENVSUBST_TEMPLATE_VARS: DOMAIN NGINX_MAX_BODY_SIZE
+    volumes:
+      - ./nginx/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./data:/app/data:ro
+      - ./cert:/etc/nginx/certs:ro
+    depends_on:
+      - fastapi

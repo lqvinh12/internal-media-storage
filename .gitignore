@@ -1,0 +1,7 @@
+data/media/*
+!data/media/.gitkeep
+cert/*
+!cert/.gitkeep
+__pycache__/
+*.pyc
+.env.prod
