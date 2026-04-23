@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data
+      - /data:/app/data
     expose:
       - "8000"
     healthcheck:
@@ -27,7 +27,7 @@ services:
       NGINX_ENVSUBST_TEMPLATE_VARS: DOMAIN NGINX_MAX_BODY_SIZE
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - ./data:/app/data:ro
+      - /data:/app/data:ro
       - ./cert:/etc/nginx/certs:ro
     depends_on:
       - fastapi
