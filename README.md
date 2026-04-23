@@ -106,7 +106,7 @@ Content-Type: multipart/form-data
 **Success response `200`:**
 ```json
 {
-  "url": "https://media.local/files/2026-03/3f2a1b4c-....pdf"
+  "url": "https://media.local/files/2026-03/a3b2c4d5_quarterly-report.pdf"
 }
 ```
 
@@ -133,8 +133,8 @@ Content-Type: multipart/form-data
 ```json
 {
   "urls": [
-    "https://media.local/files/2026-03/3f2a1b4c-....pdf",
-    "https://media.local/files/2026-03/7c9d2e1a-....docx"
+    "https://media.local/files/2026-03/a3b2c4d5_quarterly-report.pdf",
+    "https://media.local/files/2026-03/7c9d2e1a_project-summary.docx"
   ]
 }
 ```
@@ -219,7 +219,7 @@ GET https://<DOMAIN>/files/{yyyy-mm}/{filename}
 
 `pdf` `doc` `docx` `xls` `xlsx` `ppt` `pptx` `txt`
 
-Validation is done by file extension (case-insensitive). The original filename is never used — files are stored as `{yyyy-mm}/{uuid}.{ext}`.
+Validation is done by file extension (case-insensitive). Files are stored as `{yyyy-mm}/{8hex}_{slug}.{ext}` — the original filename is slugified (diacritics removed, spaces converted to hyphens, truncated to 80 characters).
 
 ---
 

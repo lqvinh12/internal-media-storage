@@ -6,6 +6,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from slugify import slugify
 from typing import List
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -32,7 +33,10 @@ async def _save_file(file: UploadFile) -> str:
     dest_dir = MEDIA_ROOT / month_dir
     dest_dir.mkdir(parents=True, exist_ok=True)
 
-    filename = f"{uuid.uuid4()}.{ext}"
+    stem = Path(file.filename).stem if file.filename else ""
+    slug = slugify(stem, max_length=80) or "file"
+    prefix = uuid.uuid4().hex[:8]
+    filename = f"{prefix}_{slug}.{ext}"
     dest = dest_dir / filename
 
     size = 0
