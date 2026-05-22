@@ -1,3 +1,13 @@
+# Previewable in browser → inline; everything else → attachment (force download)
+map $uri $content_disposition {
+    ~*\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|avif)$       "inline";
+    ~*\.(pdf)$                                            "inline";
+    ~*\.(mp4|webm|ogv|mov)$                              "inline";
+    ~*\.(mp3|ogg|wav|aac|flac|m4a)$                     "inline";
+    ~*\.(txt)$                                            "inline";
+    default                                               "attachment";
+}
+
 server {
     listen 80;
     server_name ${DOMAIN};
@@ -22,10 +32,10 @@ server {
         alias /app/data/media/;
         autoindex off;
 
-        # Disable script execution — serve as plain files
+        # Fallback MIME type for unrecognized extensions; known types use nginx's built-in lookup
         default_type application/octet-stream;
 
-        add_header Content-Disposition "attachment";
+        add_header Content-Disposition $content_disposition;
         add_header X-Content-Type-Options "nosniff";
     }
 
