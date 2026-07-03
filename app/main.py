@@ -16,7 +16,10 @@ app = FastAPI(title="Internal Media Storage")
 
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE", 10485760))  # 10 MB default
 ALLOWED_EXTENSIONS = set(
-    os.getenv("ALLOWED_EXTENSIONS", "pdf,doc,docx,xls,xlsx,ppt,pptx,txt").split(",")
+    os.getenv(
+        "ALLOWED_EXTENSIONS",
+        "pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif,webp,bmp,ico,avif",
+    ).split(",")
 )
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", "/app/data/media"))
 BASE_URL = os.getenv("BASE_URL", "http://media.local/files")

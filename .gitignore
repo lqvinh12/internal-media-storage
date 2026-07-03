@@ -5,3 +5,4 @@ cert/*
 __pycache__/
 *.pyc
 .env.prod
+CLAUDE.md

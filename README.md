@@ -184,7 +184,7 @@ GET https://<DOMAIN>/files/{yyyy-mm}/{filename}
 ```
 
 - No directory listing
-- Files are served as plain downloads (`Content-Disposition: attachment`)
+- Previewable types (images, PDF, audio, video, `txt`) are served `Content-Disposition: inline`; everything else is forced to download (`attachment`)
 - `X-Content-Type-Options: nosniff` header applied
 
 ---
@@ -198,7 +198,7 @@ GET https://<DOMAIN>/files/{yyyy-mm}/{filename}
 | `PORT` | `8000` | FastAPI internal port |
 | `MAX_FILE_SIZE` | `10485760` | Max size **per file** in bytes (10 MB) — enforced by FastAPI |
 | `NGINX_MAX_BODY_SIZE` | `104857600` | Max total request body size in bytes (100 MB) — enforced by Nginx; should be ≥ `MAX_FILE_SIZE` and large enough for batch uploads |
-| `ALLOWED_EXTENSIONS` | `pdf,doc,docx,xls,xlsx,ppt,pptx,txt` | Comma-separated allowed extensions |
+| `ALLOWED_EXTENSIONS` | `pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif,webp,bmp,ico,avif` | Comma-separated allowed extensions |
 | `MEDIA_ROOT` | `/app/data/media` | Directory where files are stored |
 | `BASE_URL` | `https://media.local/files` | Base URL returned in upload response |
 
@@ -217,9 +217,13 @@ GET https://<DOMAIN>/files/{yyyy-mm}/{filename}
 
 ## Allowed File Types
 
-`pdf` `doc` `docx` `xls` `xlsx` `ppt` `pptx` `txt`
+**Documents:** `pdf` `doc` `docx` `xls` `xlsx` `ppt` `pptx` `txt`
+
+**Images:** `jpg` `jpeg` `png` `gif` `webp` `bmp` `ico` `avif`
 
 Validation is done by file extension (case-insensitive). Files are stored as `{yyyy-mm}/{8hex}_{slug}.{ext}` — the original filename is slugified (diacritics removed, spaces converted to hyphens, truncated to 80 characters).
+
+> `svg` is intentionally excluded: Nginx serves image types `inline` (see [File Access](#file-access)), and an SVG can embed `<script>` that would execute in the browser when opened directly — a stored XSS risk. Only add it if you trust every uploader.
 
 ---
 
